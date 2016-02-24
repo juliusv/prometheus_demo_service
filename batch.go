@@ -50,7 +50,6 @@ func init() {
 
 func runBatchJobs(interval time.Duration, duration time.Duration, failureRatio float64) {
 	lastTime := float64(time.Now().UnixNano()) / 1e9
-	lastBytes := int(2e6)
 	ticker := time.NewTicker(interval)
 
 	for {
@@ -59,8 +58,7 @@ func runBatchJobs(interval time.Duration, duration time.Duration, failureRatio f
 		now := float64(time.Now().UnixNano()) / 1e9
 		if rand.Float64() > failureRatio {
 			lastSuccess.Set(now)
-			lastBytes += int(1e5) - rand.Int()%int(1e5)
-			processedBytes.Set(float64(lastBytes))
+			processedBytes.Set(float64(1e6 + 1e5 - rand.Int()%1e5))
 		}
 
 		lastRun.Set(now)
