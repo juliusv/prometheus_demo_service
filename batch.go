@@ -32,12 +32,12 @@ var (
 			Help:      "The duration in seconds of the last batch job run.",
 		},
 	)
-	processedRecords = prometheus.NewGauge(
+	processedBytes = prometheus.NewGauge(
 		prometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: "batch",
 			Name:      "last_run_processed_bytes",
-			Help:      "The number of records processed by the demo batch job in the last run.",
+			Help:      "The number of bytes processed by the demo batch job in the last run.",
 		})
 )
 
@@ -45,12 +45,12 @@ func init() {
 	prometheus.MustRegister(lastSuccess)
 	prometheus.MustRegister(lastRun)
 	prometheus.MustRegister(lastDuration)
-	prometheus.MustRegister(processedRecords)
+	prometheus.MustRegister(processedBytes)
 }
 
 func runBatchJobs(interval time.Duration, duration time.Duration, failureRatio float64) {
 	lastTime := float64(time.Now().UnixNano()) / 1e9
-	lastRecords := 1000
+	lastBytes := int(2e6)
 	ticker := time.NewTicker(interval)
 
 	for {
@@ -59,8 +59,8 @@ func runBatchJobs(interval time.Duration, duration time.Duration, failureRatio f
 		now := float64(time.Now().UnixNano()) / 1e9
 		if rand.Float64() > failureRatio {
 			lastSuccess.Set(now)
-			lastRecords += 25 - rand.Int()%50
-			processedRecords.Set(float64(lastRecords))
+			lastBytes += int(1e5) - rand.Int()%int(1e5)
+			processedBytes.Set(float64(lastBytes))
 		}
 
 		lastRun.Set(now)
