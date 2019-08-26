@@ -27,6 +27,7 @@ func main() {
 	go runBatchJobs(time.Minute, 10*time.Second, 0.25)
 	go runCPUSim(4, 0.3, 0.2)
 	go runDiskSim(160*1e9, 0.5*1e6)
+	go runHolidaySim(5*time.Minute, 0.2)
 
 	select {}
 }
