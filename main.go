@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -18,7 +18,7 @@ func main() {
 	flag.Parse()
 
 	http.HandleFunc("/api/", handleAPI)
-	http.Handle("/metrics", prometheus.Handler())
+	http.Handle("/metrics", promhttp.Handler())
 
 	go http.ListenAndServe(*addr, nil)
 
