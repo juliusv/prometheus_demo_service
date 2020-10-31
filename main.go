@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -28,6 +29,7 @@ func main() {
 	go runCPUSim(4, 0.3, 0.2)
 	go runDiskSim(160*1e9, 0.5*1e6)
 	go runHolidaySim(5*time.Minute, 0.2)
+	prometheus.MustRegister(intermittentMetric{})
 
 	select {}
 }
