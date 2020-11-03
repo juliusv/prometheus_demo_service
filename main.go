@@ -29,6 +29,7 @@ func main() {
 	go runCPUSim(4, 0.3, 0.2)
 	go runDiskSim(160*1e9, 0.5*1e6)
 	go runHolidaySim(5*time.Minute, 0.2)
+	go runMemorySim(8*1024*1024*1024, 1200*1024*1024, 2500*1024*1024, 165*1024*1024, 0.5)
 	prometheus.MustRegister(intermittentMetric{})
 
 	select {}
