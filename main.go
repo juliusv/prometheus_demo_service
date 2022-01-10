@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"net"
 	"net/http"
 	"time"
 
@@ -18,7 +19,23 @@ var (
 func main() {
 	flag.Parse()
 
-	http.HandleFunc("/api/", handleAPI)
+	http.HandleFunc("/api/", func(w http.ResponseWriter, r *http.Request) {
+		host, _, err := net.SplitHostPort(r.RemoteAddr)
+		if err != nil {
+			http.Error(w, "Can't parse source address", http.StatusInternalServerError)
+			return
+		}
+		if host != "127.0.0.1" {
+			switch r.URL.Path {
+			case "/api/foo", "/api/bar", "/metrics":
+				// Do nothing, allow these paths.
+			default:
+				http.Error(w, "Not found", http.StatusNotFound)
+				return
+			}
+		}
+		handleAPI(w, r)
+	})
 	http.Handle("/metrics", promhttp.Handler())
 
 	go http.ListenAndServe(*addr, nil)
