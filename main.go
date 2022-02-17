@@ -25,6 +25,15 @@ func main() {
 			http.Error(w, "Can't parse source address", http.StatusInternalServerError)
 			return
 		}
+
+		switch r.Method {
+		case "GET", "POST", "PUT", "HEAD", "DELETE", "CONNECT", "OPTIONS", "NOTIFY", "TRACE", "PATCH":
+			// Do nothing, allow these methods.
+		default:
+			http.Error(w, "Invalid method", http.StatusMethodNotAllowed)
+			return
+		}
+
 		if host != "127.0.0.1" {
 			switch r.URL.Path {
 			case "/api/foo", "/api/bar", "/metrics":
