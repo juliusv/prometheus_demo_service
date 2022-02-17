@@ -50,25 +50,25 @@ type responseOpts struct {
 }
 
 var opts = map[string]map[string]responseOpts{
-	"/api/foo": map[string]responseOpts{
-		"GET": responseOpts{
+	"/api/foo": {
+		"GET": {
 			baseLatency:    10 * time.Millisecond,
 			errorRatio:     0.005,
 			outageDuration: 23 * time.Second,
 		},
-		"POST": responseOpts{
+		"POST": {
 			baseLatency:    20 * time.Millisecond,
 			errorRatio:     0.02,
 			outageDuration: time.Minute,
 		},
 	},
-	"/api/bar": map[string]responseOpts{
-		"GET": responseOpts{
+	"/api/bar": {
+		"GET": {
 			baseLatency:    15 * time.Millisecond,
 			errorRatio:     0.0025,
 			outageDuration: 13 * time.Second,
 		},
-		"POST": responseOpts{
+		"POST": {
 			baseLatency:    50 * time.Millisecond,
 			errorRatio:     0.01,
 			outageDuration: 47 * time.Second,
