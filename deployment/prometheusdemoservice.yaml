@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheusdemoservice-deployment
+spec:
+  selector:
+    matchLabels:
+      app: prometheusdemoservice
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: prometheusdemoservice
+    spec:
+      containers:
+        - name: prometheusdemoservice1
+          image: sbatati/demoprom:v1
+          env:
+            - name: PORT
+              value: "8080"
+          ports:
+            - containerPort: 8080
+        - name: prometheusdemoservice2
+          image: sbatati/demoprom:v1
+          env:
+            - name: PORT
+              value: "8081"
+          ports:
+            - containerPort: 8081
+        - name: prometheusdemoservice3
+          image: sbatati/demoprom:v1
+          env:
+            - name: PORT
+              value: "8082"
+          ports:
+            - containerPort: 8082

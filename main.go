@@ -2,8 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"net"
 	"net/http"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -45,6 +48,11 @@ func main() {
 		}
 		handleAPI(w, r)
 	})
+	if value, ok := os.LookupEnv("PORT"); ok && len(value) > 0 {
+		value = fmt.Sprintf(":%s", strings.TrimLeft(value, ":"))
+		addr = &value
+	}
+	fmt.Println("Started listening on port: ", strings.TrimLeft(*addr, ":"))
 	http.Handle("/metrics", promhttp.Handler())
 
 	go http.ListenAndServe(*addr, nil)
