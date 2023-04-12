@@ -23,6 +23,16 @@ var (
 		},
 		[]string{"method", "path", "status"},
 	)
+	nativeRequestHistogram = prometheus.NewHistogramVec(
+		prometheus.HistogramOpts{
+			Namespace:                   namespace,
+			Subsystem:                   "api",
+			Name:                        "request_duration_seconds_native",
+			Help:                        "A histogram of the API HTTP request durations in seconds.",
+			NativeHistogramBucketFactor: 1.1,
+		},
+		[]string{"method", "path", "status"},
+	)
 	requestsInProgress = prometheus.NewGauge(
 		prometheus.GaugeOpts{
 			Namespace: namespace,
@@ -34,6 +44,7 @@ var (
 
 func init() {
 	prometheus.MustRegister(requestHistogram)
+	prometheus.MustRegister(nativeRequestHistogram)
 	prometheus.MustRegister(requestsInProgress)
 }
 
@@ -84,6 +95,11 @@ func handleAPI(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		requestsInProgress.Dec()
 		requestHistogram.With(prometheus.Labels{
+			"method": r.Method,
+			"path":   r.URL.Path,
+			"status": fmt.Sprint(status),
+		}).Observe(time.Since(begun).Seconds())
+		nativeRequestHistogram.With(prometheus.Labels{
 			"method": r.Method,
 			"path":   r.URL.Path,
 			"status": fmt.Sprint(status),
