@@ -19,7 +19,8 @@ var (
 			Subsystem: "api",
 			Name:      "request_duration_seconds",
 			Help:      "A histogram of the API HTTP request durations in seconds.",
-			Buckets:   prometheus.ExponentialBuckets(0.0001, 1.5, 25),
+			//Buckets:                     prometheus.ExponentialBuckets(0.0001, 1.5, 25),
+			NativeHistogramBucketFactor: 1.2,
 		},
 		[]string{"method", "path", "status"},
 	)
