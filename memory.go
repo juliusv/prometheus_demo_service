@@ -20,15 +20,13 @@ func init() {
 	prometheus.MustRegister(memoryUsage)
 }
 
-func runMemorySim(total, usedBase, cachedBase, buffersBase, maxDeviation float64) {
+func runMemorySim(total int, usedBase int, cachedBase int, buffersBase int, maxDeviation float64) {
 	var used, cached, buffers = usedBase, cachedBase, buffersBase
 
-	randomStep := func(current, base float64) float64 {
-		current += (rand.Float64() - 0.5) * 60 * 1024 * 1024
-		if current < base-base*maxDeviation {
-			current = base
-		}
-		if current > base+base*maxDeviation {
+	randomStep := func(current, base int) int {
+		current += int((rand.Float64() - 0.5) * 60 * 1024 * 1024)
+		maxDev := int(float64(base) * maxDeviation)
+		if current < base-maxDev || current > base+maxDev {
 			current = base
 		}
 		return current
@@ -39,10 +37,10 @@ func runMemorySim(total, usedBase, cachedBase, buffersBase, maxDeviation float64
 		cached = randomStep(cached, cachedBase)
 		buffers = randomStep(buffers, buffersBase)
 
-		memoryUsage.WithLabelValues("used").Set(used)
-		memoryUsage.WithLabelValues("cached").Set(cached)
-		memoryUsage.WithLabelValues("buffers").Set(buffers)
-		memoryUsage.WithLabelValues("free").Set(total - used - cached - buffers)
+		memoryUsage.WithLabelValues("used").Set(float64(used))
+		memoryUsage.WithLabelValues("cached").Set(float64(cached))
+		memoryUsage.WithLabelValues("buffers").Set(float64(buffers))
+		memoryUsage.WithLabelValues("free").Set(float64(total - used - cached - buffers))
 
 		time.Sleep(100 * time.Millisecond)
 	}
