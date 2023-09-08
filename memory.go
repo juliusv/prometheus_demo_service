@@ -20,12 +20,12 @@ func init() {
 	prometheus.MustRegister(memoryUsage)
 }
 
-func runMemorySim(total int, usedBase int, cachedBase int, buffersBase int, maxDeviation float64) {
+func runMemorySim(total uint64, usedBase uint64, cachedBase uint64, buffersBase uint64, maxDeviation float64) {
 	var used, cached, buffers = usedBase, cachedBase, buffersBase
 
-	randomStep := func(current, base int) int {
-		current += int((rand.Float64() - 0.5) * 60 * 1024 * 1024)
-		maxDev := int(float64(base) * maxDeviation)
+	randomStep := func(current, base uint64) uint64 {
+		current += uint64((rand.Float64() - 0.5) * 60 * 1024 * 1024)
+		maxDev := uint64(float64(base) * maxDeviation)
 		if current < base-maxDev || current > base+maxDev {
 			current = base
 		}
