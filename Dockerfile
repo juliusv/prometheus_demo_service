@@ -1,4 +1,4 @@
-FROM golang:1.21-alpine as builder
+FROM golang:1.22-alpine as builder
 
 WORKDIR /source
 COPY . /source
@@ -6,7 +6,7 @@ COPY . /source
 RUN go mod download
 RUN go build -v -o prometheus_demo_service .
 
-FROM        alpine:3
+FROM        alpine:latest
 MAINTAINER  Julius Volz <julius.volz@gmail.com>
 
 COPY --from=builder /source/prometheus_demo_service  /bin/prometheus_demo_service
